@@ -3,33 +3,28 @@ package com.example.samayatest.view.activity;
 import android.content.Context;
 import android.os.Bundle;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.Volley;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.example.samayatest.R;
 import com.example.samayatest.model.data.PicturesRoom;
 import com.example.samayatest.presenter.implementation.BasePresenter;
 import com.example.samayatest.presenter.implementation.PicturesPresenter;
 import com.example.samayatest.presenter.callback.PicturesCallback;
-
+import com.example.samayatest.view.adapter.GalleryAdapter;
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.List;
+import java.util.ArrayList;
 
 public class MainActivity extends BaseActivity implements  PicturesCallback{
 
     private PicturesPresenter mPresenter;
+    private GalleryAdapter galleryAdapter;
+    RecyclerView gridView = findViewById(R.id.gridView);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mPresenter.getPicturesRx(this, this);
+        mPresenter.getPicturesRx(this);
     }
 
     @Override
@@ -39,8 +34,19 @@ public class MainActivity extends BaseActivity implements  PicturesCallback{
     }
 
     @Override
-    public void onSucess(List<PicturesRoom> picturesRoomList) {
+    public void onSucess(ArrayList<PicturesRoom> picturesRoomList) {
+        initOrUpdateView(picturesRoomList);
+    }
 
+    private void initOrUpdateView(ArrayList<PicturesRoom> picturesRoomList) {
+        if (galleryAdapter != null) {
+            galleryAdapter.updateGalleryAdapter(picturesRoomList);
+        } else {
+            GridLayoutManager gridManager = new GridLayoutManager(this, 3);
+            gridView.setLayoutManager(gridManager);
+            //gridView.setOnClickListener(v -> onItemPhotosClicked(picturesRoomList));
+            galleryAdapter = new GalleryAdapter(this, picturesRoomList);
+            gridView.setAdapter(galleryAdapter);
     }
 
     @Override

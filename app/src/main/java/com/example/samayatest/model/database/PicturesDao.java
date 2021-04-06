@@ -22,7 +22,7 @@ public interface PicturesDao {
     void delete(User user);*/
 
     @Query("SELECT * FROM Pictures")
-    List<PicturesRoom> getAll();
+    ArrayList<PicturesRoom> getAll();
 
     @Insert
     void insertAll(PicturesRoom... picturesRooms);

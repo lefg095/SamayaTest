@@ -16,6 +16,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.samayatest.model.data.PicturesRoom;
 import com.example.samayatest.model.database.AppDatabase;
 import com.example.samayatest.presenter.callback.PicturesCallback;
+import com.example.samayatest.support.VolleyRequest;
 import com.example.samayatest.view.activity.MainActivity;
 
 import org.json.JSONArray;
@@ -31,17 +32,17 @@ import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-public class PicturesPresenter extends BasePresenter{
+public class PicturesPresenter extends BasePresenter {
 
     private PicturesCallback callbackP;
 
-    public PicturesPresenter(Context context, PicturesCallback callback, Activity activity){
+    public PicturesPresenter(Context context, PicturesCallback callback, Activity activity) {
         super(context, activity);
         callbackP = callback;
     }
 
-    public void getPicturesRx(MainActivity mainActivity, Context context){
-        disposable = Observable.fromCallable(() -> getPictures(context, callbackP))
+    public void getPicturesRx(Context context) {
+        disposable = Observable.fromCallable(() -> getPictures(context))
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(result -> callbackP.onLoading("Cargando..."))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -52,51 +53,27 @@ public class PicturesPresenter extends BasePresenter{
                 });
     }
 
-    private JSONArray getPictures(Context context, PicturesCallback callbackP) throws Exception {
-        String url = "https://picsum.photos/v2/list?page=2&limit=100";
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
-        /*JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.POST, url, JSONArray jsonArray,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        try {
-                            for (int i = 0; i < response.length(); i++) {
-                                PicturesRoom picture = new PicturesRoom();
-                                JSONObject jsonObject = response.getJSONObject(i);
-                                picture.setId(jsonObject.getLong("id"));
-                                picture.setAuthor(jsonObject.getString("author"));
-                                picture.setWidth(jsonObject.getLong("width"));
-                                picture.setHeight(jsonObject.getLong("height"));
-                                picture.setUrl(jsonObject.getString("url"));
-                                picture.setDownload_url(jsonObject.getString("download_url"));
-                                AppDatabase.getInstance(context).picturesDao().insertAll(picture);
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener(){
-                    @Override
-                    public void onErrorResponse(VolleyError error){
-
-                    }
-                });*/
-        // Initialize a new JsonArrayRequest instance
-
-
-        AtomicReference<JSONArray> result = new AtomicReference<>(new JSONArray());
-        JsonArrayRequest request = new JsonArrayRequest
-                (Request.Method.GET, url + "getLocations", null, response -> {
-                    result.set(response);
-                    //Here I have correct value of result (JSONArray)
-                    System.out.println(result.get());
-                    callbackP.onSuccessArray(response);
-                },
-                        error -> {
-                            Toast.makeText(context, "Cannot update users' location :" + error, Toast.LENGTH_LONG).show();
-                        });
-        requestQueue.add(request);
+    private JSONArray getPictures(Context context) throws Exception {
+        String url = "https://picsum.photos/v2/list?page=2&limit=20";
+        RequestFuture<JSONArray> request = VolleyRequest.getInstance().makeRequest(context, url, Request.Method.GET, new JSONArray());
+        JSONArray response = request.get();
+        JSONArray jsonArray = response;
+        try {
+            int longitud = response.length();
+            for (int i = 0; i < longitud; i++) {
+                PicturesRoom picture = new PicturesRoom();
+                JSONObject jsonObject = response.getJSONObject(i);
+                picture.setId(jsonObject.getLong("id"));
+                picture.setAuthor(jsonObject.getString("author"));
+                picture.setWidth(jsonObject.getLong("width"));
+                picture.setHeight(jsonObject.getLong("height"));
+                picture.setUrl(jsonObject.getString("url"));
+                picture.setDownload_url(jsonObject.getString("download_url"));
+                AppDatabase.getInstance(context).picturesDao().insertAll(picture);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 }

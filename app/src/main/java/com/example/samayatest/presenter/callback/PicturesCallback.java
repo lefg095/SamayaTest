@@ -11,5 +11,4 @@ public interface PicturesCallback {
         void onSucess(List<PicturesRoom> picturesRoomList);
         void onLoading(String message);
         void onError(String error);
-        void onSuccessArray(JSONArray array);
 }
