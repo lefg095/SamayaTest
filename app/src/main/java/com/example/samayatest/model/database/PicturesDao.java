@@ -22,8 +22,9 @@ public interface PicturesDao {
     void delete(User user);*/
 
     @Query("SELECT * FROM Pictures")
-    ArrayList<PicturesRoom> getAll();
+    List<PicturesRoom> getAll();
 
     @Insert
-    void insertAll(PicturesRoom... picturesRooms);
+    default void insertAll(PicturesRoom... picturesRooms) {
+    }
 }

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface PicturesCallback {
-        void onSucess(List<PicturesRoom> picturesRoomList);
+        void onSucess(ArrayList<PicturesRoom> picturesRoomList);
         void onLoading(String message);
         void onError(String error);
 }
