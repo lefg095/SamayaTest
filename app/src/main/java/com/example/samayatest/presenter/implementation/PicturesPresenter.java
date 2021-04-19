@@ -35,7 +35,7 @@ import io.reactivex.schedulers.Schedulers;
 public class PicturesPresenter extends BasePresenter {
 
     private PicturesCallback callbackP;
-    private ArrayList<PicturesRoom> picturesRoomArrayList;
+    private ArrayList<PicturesRoom> picturesRoomArrayList = new ArrayList<>();
 
     public PicturesPresenter(Context context, PicturesCallback callback, Activity activity) {
         super(context, activity);
@@ -49,16 +49,16 @@ public class PicturesPresenter extends BasePresenter {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result ->  {
                     if(result.equals("")){
-                        callbackP.onSucess(result);
-                    }{
+                        callbackP.onSucess(picturesRoomArrayList);
+                    }else{
                         callbackP.onError("Error al cargar imagenes");
                     }
                 }, throwable -> {
-                    callbackP.onError("Error al cargar imagenes");
+                    callbackP.onError("Error al cargar imagenes!!");
                 });
     }
 
-    private ArrayList<PicturesRoom> getPictures(Context context) throws Exception {
+    private String getPictures(Context context) throws Exception {
         String url = "https://picsum.photos/v2/list?page=2&limit=20";
         RequestFuture<JSONArray> request = VolleyRequest.getInstance().makeRequest(context, url, Request.Method.GET, new JSONArray());
         JSONArray response = request.get();
@@ -75,10 +75,16 @@ public class PicturesPresenter extends BasePresenter {
                 picture.setDownload_url(jsonObject.getString("download_url"));
                 //AppDatabase.getInstance(context).picturesDao().insertAll(picture);
                 picturesRoomArrayList.add(picture);
+
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return picturesRoomArrayList;
+        if (picturesRoomArrayList.isEmpty()){
+            return "error!";
+        }else{
+            return "";
+        }
+
     }
 }

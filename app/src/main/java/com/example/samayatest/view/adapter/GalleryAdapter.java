@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.samayatest.R;
 import com.example.samayatest.model.data.PicturesRoom;
 import com.example.samayatest.presenter.callback.GalleryCallback;
@@ -19,6 +20,7 @@ import java.util.List;
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryViewHolder> {
     private ArrayList<PicturesRoom> picturesRoomArrayList;
     private GalleryCallback mCallback;
+    private View view;
     public GalleryAdapter(GalleryCallback callback, ArrayList<PicturesRoom> picturesRoomArrayList) {
         mCallback = callback;
         this.picturesRoomArrayList = picturesRoomArrayList;
@@ -26,7 +28,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
     @NonNull
     @Override
     public GalleryAdapter.GalleryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_picture, parent, false);
+        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_picture, parent, false);
         return new GalleryViewHolder(view);
     }
 
@@ -34,6 +36,9 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
     public void onBindViewHolder(@NonNull GalleryViewHolder holder, int position) {
         PicturesRoom pictures = picturesRoomArrayList.get(position);
         holder.textView.setText(pictures.getAuthor());
+        Glide.with(view)
+                .load(pictures.getDownload_url())
+                .into(holder.imageView);
     }
 
     @Override

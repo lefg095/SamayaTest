@@ -15,10 +15,13 @@ import com.example.samayatest.view.utilities.SweetDialogs;
 
 import java.util.ArrayList;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 public class MainActivity extends BaseActivity implements PicturesCallback, GalleryCallback {
 
     private PicturesPresenter mPresenter;
     private GalleryAdapter galleryAdapter;
+    private SweetAlertDialog mProgress;
     RecyclerView gridView;
     Context context = this;
     @Override
@@ -39,7 +42,7 @@ public class MainActivity extends BaseActivity implements PicturesCallback, Gall
         if (galleryAdapter != null) {
             galleryAdapter.updateGalleryAdapter(picturesRoomList);
         } else {
-            GridLayoutManager gridManager = new GridLayoutManager(getApplicationContext(), 3);
+            GridLayoutManager gridManager = new GridLayoutManager(getApplicationContext(), 4);
             gridView.setLayoutManager(gridManager);
             //gridView.setOnClickListener(v -> onItemPhotosClicked(picturesRoomList));
             galleryAdapter = new GalleryAdapter(this, picturesRoomList);
@@ -49,16 +52,19 @@ public class MainActivity extends BaseActivity implements PicturesCallback, Gall
 
     @Override
     public void onSucess(ArrayList<PicturesRoom> picturesRoomList) {
+        mProgress.dismissWithAnimation();
         initOrUpdateView(picturesRoomList);
     }
 
     @Override
     public void onLoading(String message) {
-        SweetDialogs.sweetLoading(this, message);
+        mProgress = SweetDialogs.sweetLoading(this, message);
+        mProgress.show();
     }
 
     @Override
     public void onError(String error) {
-        SweetDialogs.sweetError(this, error);
+        mProgress.dismissWithAnimation();
+        SweetDialogs.sweetError(this, error).show();
     }
 }

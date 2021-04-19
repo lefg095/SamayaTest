@@ -18,6 +18,13 @@ public class PicturesRoom implements Parcelable {
     private String author;
     @ColumnInfo(name = "width")
     private long width;
+    @ColumnInfo(name = "height")
+    private long height;
+    @ColumnInfo(name = "url")
+    private String url;
+    @ColumnInfo(name = "download_url")
+    private String download_url;
+
 
     public PicturesRoom() {
     }
@@ -70,12 +77,7 @@ public class PicturesRoom implements Parcelable {
         this.download_url = download_url;
     }
 
-    @ColumnInfo(name = "height")
-    private long height;
-    @ColumnInfo(name = "url")
-    private String url;
-    @ColumnInfo(name = "download_url")
-    private String download_url;
+
 
 
     protected PicturesRoom(Parcel in) {
