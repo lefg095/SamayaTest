@@ -26,6 +26,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titlePicture" />
 
+    <CheckBox
+        android:id="@+id/icon"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:scaleX="0.70"
+        android:scaleY="0.70"
+        android:theme="@style/Base.Widget.AppCompat.CompoundButton.CheckBox."
+        android:button="@drawable/sl_favourite_24dp"
+        app:buttonTint="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 <!--
